@@ -41,6 +41,23 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getMe = catchAsync(async (req, res, next) => {
+  req.user.role = undefined;
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: req.user,
+    },
+  });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndDelete(req.user._id);
+  // await Task.deleteMany({ owner: req.user._id });
+
+  res.status(204).json({ status: 'success', data: null });
+});
+
 exports.getUser = factory.getOne(User);
 exports.deleteUser = factory.deleteOne(User);
 exports.getAllUsers = factory.getAll(User);

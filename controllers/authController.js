@@ -49,6 +49,23 @@ exports.registerUser = catchAsync(async (req, res) => {
   });
 });
 
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from Collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2) Check if posted password is correct
+  if (!user || !(await user.validatePassword(req.body.password, user.password))) {
+    return next(new AppError('Email or password is incorrect, please try again', 401));
+  }
+  // 3) If so, update the
+  user.password = req.body.newPassword;
+  // user.passwordConfirm = req.body.newPasswordConfirm;
+  await user.save();
+
+  // 4) Log the user in, send JWT
+  createSendToken(user, 200, req, res);
+});
+
 //! LOGIN
 exports.loginUser = catchAsync(async (req, res, next) => {
   // 1) Check if email and password exist
