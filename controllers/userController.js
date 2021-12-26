@@ -1,6 +1,7 @@
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
+const factory = require('./handlerFactory');
 
 exports.updateUser = catchAsync(async (req, res, next) => {
   const updates = Object.keys(req.body);
@@ -39,3 +40,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getUser = factory.getOne(User);
+exports.deleteUser = factory.deleteOne(User);
+exports.getAllUsers = factory.getAll(User);

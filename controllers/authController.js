@@ -21,6 +21,7 @@ const createSendToken = (user, statusCode, req, res) => {
 
   // Remove the password from the output
   user.password = undefined;
+  user.role = undefined;
   user.__v = undefined;
 
   res.status(statusCode).json({
@@ -106,3 +107,12 @@ exports.protect = catchAsync(async (req, res, next) => {
   res.locals.user = currentUser;
   next();
 });
+
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    // roles ['admin', 'lead-guide']. role='user'
+    if (!roles.includes(req.user.role))
+      return next(new AppError('You do not have permission to perform this action', 403));
+    next();
+  };
