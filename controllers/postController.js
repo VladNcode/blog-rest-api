@@ -68,22 +68,22 @@ exports.getPost = catchAsync(async (req, res, next) => {
 
 //! Get all posts
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  // console.log(req.query.user);
-  // const username = req.query.user;
-  // const catName = req.query.cat;
-  // let posts;
+  const catName = req.query.cat;
 
-  // if (username) posts = await Post.find({ username });
-  // if (catName)
-  //   posts = await Post.find({
-  //     categories: {
-  //       $in: [catName],
-  //     },
-  //   });
+  let filter = {};
+  if (catName)
+    filter = {
+      categories: {
+        $in: [catName],
+      },
+    };
 
-  // posts = await Post.find();
+  const features = new APIFeatures(Post.find(filter), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-  const features = new APIFeatures(Post.find(), req.query).filter().sort().limitFields().paginate();
   const posts = await features.query;
 
   res.status(200).json({
