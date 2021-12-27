@@ -1,4 +1,5 @@
 const AppError = require('../utils/appError');
+const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const Post = require('../models/postModel');
 
@@ -67,8 +68,23 @@ exports.getPost = catchAsync(async (req, res, next) => {
 
 //! Get all posts
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  const posts = await Post.find();
-  // if (posts.length < 1) return next(new AppError('No posts found', 404));
+  // console.log(req.query.user);
+  // const username = req.query.user;
+  // const catName = req.query.cat;
+  // let posts;
+
+  // if (username) posts = await Post.find({ username });
+  // if (catName)
+  //   posts = await Post.find({
+  //     categories: {
+  //       $in: [catName],
+  //     },
+  //   });
+
+  // posts = await Post.find();
+
+  const features = new APIFeatures(Post.find(), req.query).filter().sort().limitFields().paginate();
+  const posts = await features.query;
 
   res.status(200).json({
     status: 'success',

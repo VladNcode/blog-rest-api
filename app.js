@@ -8,6 +8,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const postRouter = require('./routes/postRoutes');
+const categoryRouter = require('./routes/categoryRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use('/api/v1/auth/', authRouter);
 app.use('/api/v1/users/', userRouter);
 app.use('/api/v1/posts/', postRouter);
+app.use('/api/v1/categories/', categoryRouter);
 
 //* Error handling
 app.all('*', (req, res, next) => {
